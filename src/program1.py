@@ -18,8 +18,27 @@ def program1(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[int
     ############################
     # Add you code here
     ############################
+    curr_width = 0
+    curr_height = 0
+    curr_platform_len = 0
+    total_height = 0
+    platforms = []
 
-    return 0, 0, [] # replace with your code
+    for i in range(n):
+        if curr_width + widths[i] <= W:
+            curr_width += widths[i]
+            curr_height = max(curr_height, heights[i])
+            curr_platform_len += 1
+        else:
+            platforms.append(curr_platform_len)
+            total_height += curr_height
+            curr_width = widths[i]
+            curr_height = heights[i]
+            curr_platform_len = 1
+
+    platforms.append(curr_platform_len)
+    total_height += curr_height
+    return len(platforms), total_height, platforms
 
 
 if __name__ == '__main__':
