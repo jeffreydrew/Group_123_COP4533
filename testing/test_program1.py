@@ -13,6 +13,7 @@ def generate_test_case(n, W):
 
     # Generate heights
     heights = [random.randint(1, 10**5 - 1) for _ in range(n)]
+    heights.sort(reverse=True)
 
     # Generate widths
     widths = [random.randint(1, 10**5 - 1) for _ in range(n)]
