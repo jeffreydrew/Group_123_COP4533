@@ -5,7 +5,7 @@ import os
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, project_root)
 
-from src.program1 import program1  # Import the main function
+from src.program2 import program2  # Import the main function
 
 def generate_test_case(n, W):
     n = random.randint(1, min(n, 10**5 - 1))
@@ -48,7 +48,7 @@ def run_test():
         heights = list(map(int, input().split()))
         widths = list(map(int, input().split()))
 
-        m, total_height, num_paintings = program1(n, W, heights, widths)
+        m, total_height, num_paintings = program2(n, W, heights, widths)
 
         print(m)
         print(total_height)

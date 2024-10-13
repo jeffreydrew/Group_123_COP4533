@@ -48,17 +48,19 @@ def program2(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[int
     min_index = heights.index(min_number)
 
     len1, height1, platforms1, rem_width1 = greedy(min_index, W, heights[0:min_index], widths[0:min_index])
-    len2, height2, platforms2, rem_width2 = greedy(min_index, W, heights[n-1:min_index+1:-1], widths[n-1:min_index+1:-1])
+    len2, height2, platforms2, rem_width2 = greedy(n-min_index-1, W, heights[min_index+1:n], widths[min_index+1:n])
 
+    platforms2.reverse()
 
     if (rem_width1 < widths[min_index] and rem_width2 < widths[min_index]):
-        return len1+len2+1, height1+height2 + heights[min_index], platforms1.append(1).append(reversed(platforms2))
+        platforms1.append(1)
+        return len1+len2+1, height1+height2 + heights[min_index], platforms1 + platforms2
     elif (rem_width1 >= widths[min_index]):
         platforms1[-1] += 1
-        return len1 + len2, height1+height2, platforms1.append(reversed(platforms2))
+        return len1 + len2, height1+height2, platforms1 + platforms2
     else:
-        platforms2[-1] += 1
-        return len1 + len2, height1+height2, platforms1.append(reversed(platforms2))
+        platforms2[0] += 1
+        return len1 + len2, height1+height2, platforms1 + platforms2
     
     #return 0, 0, [] # replace with your code
 
