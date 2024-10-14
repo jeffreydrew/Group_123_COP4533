@@ -39,6 +39,7 @@ tests = [
     "20 9\n30 20 10 10 10 10 10 20 30\n3 4 2 5 1 3 4 3 4\n",
     "50 20\n50 45 40 35 30 25 20 15 10 5 6 7 8 9 10 15 20 25 30 35\n2 3 4 2 3 4 2 3 4 2 3 4 2 3 4 2 3 4 2 3\n",
     "100 30\n100 90 80 70 60 50 40 30 20 10 5 6 7 8 9 10 20 30 40 50 60 70 80 90 100 110 120 130 140 150\n3 4 5 3 4 5 3 4 5 3 4 5 3 4 5 3 4 5 3 4 5 3 4 5 3 4 5 3 4 5\n"
+
 ]
 
 def generate_test_case(n, W):
@@ -50,7 +51,7 @@ def generate_test_case(n, W):
     heights.sort(reverse=True)
 
     # Generate widths
-    widths = [random.randint(1, 10**5 - 1) for _ in range(n)]
+    widths = [random.randint(1, W) for _ in range(n)]
 
     # Format the test case
     test_case = f"{n} {W}\n"
@@ -101,5 +102,8 @@ def run_test(test_input):
     print(output)
 
 if __name__ == "__main__":
-    for test_input in tests:
-        run_test(test_input)
+    test_input = generate_test_case(1000, 25)
+    run_test(test_input)
+
+    # for test_input in tests:
+    #     run_test(test_input)
