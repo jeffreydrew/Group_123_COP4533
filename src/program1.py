@@ -3,7 +3,7 @@ from typing import List, Tuple
 def program1(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[int, int, List[int]]:
     """
     Solution to Program 1
-    
+
     Parameters:
     n (int): number of paintings
     W (int): width of the platform
@@ -15,30 +15,40 @@ def program1(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[int
     int: optimal total height
     List[int]: number of paintings on each platform
     """
+
     ############################
     # Add you code here
-    ############################
-    curr_width = 0
-    curr_height = 0
-    curr_platform_len = 0
-    total_height = 0
-    platforms = []
+
+    # this basically iterates through each painting and tracks the platforms W & H
+
+    plat = []
+    newPlat = []
+    newWidth = 0
+    newHeight = 0
+    finalHeight = 0
 
     for i in range(n):
-        if curr_width + widths[i] <= W:
-            curr_width += widths[i]
-            curr_height = max(curr_height, heights[i])
-            curr_platform_len += 1
+        if newWidth + widths[i] <= W: # adds painting
+            newPlat.append(i)
+            newWidth += widths[i]
+            newHeight = max(newHeight, heights[i])
         else:
-            platforms.append(curr_platform_len)
-            total_height += curr_height
-            curr_width = widths[i]
-            curr_height = heights[i]
-            curr_platform_len = 1
+            plat.append(newPlat)
+            finalHeight += newHeight
 
-    platforms.append(curr_platform_len)
-    total_height += curr_height
-    return len(platforms), total_height, platforms
+            newPlat = [i] # new platform starts
+            newWidth = widths[i]
+            newHeight = heights[i]
+
+    if newPlat:
+        plat.append(newPlat)
+        finalHeight += newHeight
+
+    return len(plat), finalHeight, [len(p) for p in plat]
+
+    ############################
+
+    ##return 0, 0, [] # replace with your code
 
 
 if __name__ == '__main__':
@@ -52,4 +62,3 @@ if __name__ == '__main__':
     print(total_height)
     for i in num_paintings:
         print(i)
-    
