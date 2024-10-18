@@ -19,8 +19,50 @@ def program3(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[int
     ############################
     # Add you code here
     ############################
+    def helper(n):
+        if n == 1:
+            return [[[0]]]
+        groups = []
+        subgroups = helper(n-1)
 
-    return 0, 0, [] # replace with your code
+        for subplatform in subgroups:
+            #add a new platform
+            groups.append(subgroups + [[n-1]])
+            #add to all existing platforms
+            for i in range(len(subgroups)):
+                groups.append(subgroups[i-1:]+[subgroups[i]+[n-1]]+subgroups[i+1:])
+        return groups
+    
+    def get_cost(group):
+        cost = 0
+        for platform in group:
+            cost += max(heights[painting] for painting in platform)
+        return cost
+    
+    def check_valid(group):
+        for platform in group:
+            width = 0
+            for painting in platform:
+                width += widths[painting]
+            if width > W:
+                return False
+        return True
+    
+    groups = helper(n)
+    valid_groups = []
+    for group in groups:
+        if check_valid(group):
+            valid_groups.append(group)
+    
+    min_cost = float('inf')
+    for group in valid_groups:
+        cost = get_cost(group)
+        if cost < min_cost:
+            min_cost = cost
+            best_group = group
+    
+    return len(best_group), get_cost(best_group), [len(group) for group in best_group]
+
 
 
 if __name__ == '__main__':
