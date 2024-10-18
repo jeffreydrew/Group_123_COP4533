@@ -4,33 +4,30 @@ import sys
 import os
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, project_root)
+from generate_tests import generate_test_case
 
-from src.program2 import program2  # Import the main function
+from src.program1 import program1
+from src.program2 import program2 
+from src.program3 import program3 
+from src.program4 import program4
+from src.program5A import program5A
+from src.program5B import program5B
 
-def generate_test_case(n, W):
-    n = random.randint(1, min(n, 10**5 - 1))
-    W = random.randint(1, min(W, 10**5 - 1))
+programs = {
+    "program1": program1,
+    "program2": program2,
+    "program3": program3,
+    "program4": program4,
+    "program5A": program5A,
+    "program5B": program5B
+}
 
-    # Generate heights
-    heights = [random.randint(1, 10**5 - 1) for _ in range(n)]
-    heights.sort(reverse=True)
-
-    # Generate widths
-    widths = [random.randint(1, 10**5 - 1) for _ in range(n)]
-
-    # Format the test case
-    test_case = f"{n} {W}\n"
-    test_case += " ".join(map(str, heights)) + "\n"
-    test_case += " ".join(map(str, widths)) + "\n"
-
-    return test_case
-
-def run_test():
-    # Generate a test case
-    #test_input = generate_test_case(10, 100)
-
-    # Use given test case
-    test_input = "7 10\n12 10 9 7 8 10 11\n3 2 3 4 3 2 3\n"
+def run_test(test_case=None, random_test=False):
+    if random_test:
+        # Generate a test case
+        test_input = generate_test_case(10, 100, test_case)
+    else:
+        test_input = "7 10\n12 10 9 7 8 10 11\n3 2 3 4 3 2 3\n"
     
     # Store the original stdin
     original_stdin = sys.stdin
@@ -48,7 +45,7 @@ def run_test():
         heights = list(map(int, input().split()))
         widths = list(map(int, input().split()))
 
-        m, total_height, num_paintings = program2(n, W, heights, widths)
+        m, total_height, num_paintings = programs.get(test_case)(n, W, heights, widths)
 
         print(m)
         print(total_height)
@@ -69,4 +66,4 @@ def run_test():
     print(output)
 
 if __name__ == "__main__":
-    run_test()
+    run_test('program2', random_test=True)
