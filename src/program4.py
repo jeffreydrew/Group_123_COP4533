@@ -20,7 +20,9 @@ def program4(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[int
     # Add you code here
     ############################
     # 
-    # O(n^2*W) algorithm: Use dynamic programming approach. 
+    # O(n^2*W) algorithm: Use dynamic programming approach. We iterate through n paintings. 
+    # In Each painting, we explore all possible w widths up to W. For each w, we explore all possible 0-ith arrangement. 
+    # Thus, time complexity is n* (n-1)/2 for the nested 1st-3rd loop, and W for second loop, or O(n^2*W).
     # For each i_th painting, exploring all possible width within constraint W to compute optimal arrangement at each dp[i][w] state.
     dp = [[(float('inf'), float('inf'), []) for _ in range(W + 1)] for _ in range(n + 1)] # Initialize dp table with size (n+1,W+1)
     dp[0][0] = (0,0,[])  # Base case: No painting and no width.
