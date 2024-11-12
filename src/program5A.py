@@ -20,6 +20,7 @@ def program5A(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[in
     # Add you code here
     ############################
     # DP with memoization (top_down). dp[i] table tracks the optimal minimum height of arranging the first i paintings
+    # The top-down iterate through n paintings. As the minimum height is not recomputed, each paintings will only call recurse(i) i times. Thus time complexity is 1+2+...+n = O(n^2).
     dp = [-1] * (n+1)  # Initialize dp table. -1 means uncomputed at that ith painting.
     new_display = [-1] * (n+1) # for backtracking the optimal arrangement. It stores the index where new display is used
     # Recursion dp approach: explore all possible cases to arrange the ith painting and calculate min height at each case.
