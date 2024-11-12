@@ -30,6 +30,7 @@ def program3(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[int
     # current_height: tallest painting in the current display
     # total_height: the total height of all displays currently.
     # num_per_display: number of paintings in each display currently. 
+    # We explored all n paintings. Each n-1 paintings we have 2 options to recurse. Thus time complexity is O(n*2^(n-1)).
     def recurse(i, current_width, current_height, total_height, num_per_display):
         nonlocal min_height, m, num_paintings   # make the parameters global for recursion.
 
