@@ -19,7 +19,7 @@ def program5B(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[in
     ############################
     # Add you code here
     ############################
-    #Dp bottom-up approach: Dp[i] table keeps track of the minimum height to arrange the first i paintings. 
+    #Dp bottom-up approach: Dp[i] table keeps track of the minimum height (optimal height) to arrange the first i paintings. 
     dp = [float('inf')] * (n+1)  #Intialize dp
     dp[0] = 0    # Base case: No painting has been arranged.
     new_display = [-1] * (n+1)   # new_display table to keep track of indices where new display is used 
@@ -34,7 +34,8 @@ def program5B(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[in
             # Cannot add ith painting if it exceeds W constraint.
             if total_width > W:
                 break
-            # If the optimal arrangement up to the j-1 th painting plus the painting from j to i results in smaller heigbt, update dp[i] and store index j-1 as new_display needs.
+            # If the optimal arrangement up to the j-1 th painting plus the painting from j to i results in smaller heihght,
+            # In other words, as j-1th paintings are arranged in optimal way, we found a new optimal arrangement for jth-ith paintings. update dp[i] and store index j-1 as new_display needs.
             if dp[j-1] + max_height < dp[i]:
                 dp[i] = dp[j-1] + max_height
                 new_display[i] = j-1
