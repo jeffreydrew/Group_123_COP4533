@@ -20,6 +20,8 @@ def program5B(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[in
     # Add you code here
     ############################
     #Dp bottom-up approach: Dp[i] table keeps track of the minimum height (optimal height) to arrange the first i paintings. 
+    # The algorithm loops over n paintings. In each ith painting, the loop will check over the first i paintings for optimal dp value. 
+    # Thus, time complexity is 1+2+...+n, or O(n^2).
     dp = [float('inf')] * (n+1)  #Intialize dp
     dp[0] = 0    # Base case: No painting has been arranged.
     new_display = [-1] * (n+1)   # new_display table to keep track of indices where new display is used 
