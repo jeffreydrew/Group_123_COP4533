@@ -19,10 +19,11 @@ def program5A(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[in
     ############################
     # Add you code here
     ############################
-    # DP with memoization (top_down). dp[i] table tracks the minimum height after arranging the first i paintings
+    # DP with memoization (top_down). dp[i] table tracks the optimal minimum height of arranging the first i paintings
     dp = [-1] * (n+1)  # Initialize dp table. -1 means uncomputed at that ith painting.
     new_display = [-1] * (n+1) # for backtracking the optimal arrangement. It stores the index where new display is used
     # Recursion dp approach: explore all possible cases to arrange the ith painting and calculate min height at each case.
+    # recurse() function returns the optimal arrangement at each ith state.
     def recurse(i):
         # base case: there is no painting to arrange. Return 0 as the height of zero painting.
         if i == 0: return 0
@@ -33,7 +34,7 @@ def program5A(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[in
         width_sum = 0
         max_height = 0
         dp[i] = float('inf')
-        #Iterate through all possible subset of paintings ending at i. Update the width and height if possible
+        #Iterate through all possible subset of paintings starting at j and ending at i. Update the width and height if possible
         for j  in range (i, 0, -1):
             width_sum += widths[j-1]
             max_height = max(max_height, heights[j-1])
@@ -42,7 +43,7 @@ def program5A(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[in
                 break
             # curr_height is the heigiht if the subset from jth to ith painting forms a new row. Calculated by adding the minimum height requred to arrange the first j-1th paintings recursively.
             curr_height = recurse(j-1) + max_height
-            # Recalculating min height at ith painting when considering all cases. 
+            # Recalculating min height at ith painting if necessary when considering all cases. 
             if curr_height < dp[i]:
                 dp[i] = curr_height
                 new_display[i] = j-1  # Keep track of where the new display starts
