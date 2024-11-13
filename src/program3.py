@@ -19,50 +19,45 @@ def program3(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[int
     ############################
     # Add you code here
     ############################
-    def helper(n):
-        if n == 1:
-            return [[[0]]]
-        groups = []
-        subgroups = helper(n-1)
+    min_height = float('inf')    # minimum height 
+    num_paintings = []        # number of paintings in each display
+    m = 0      # Number of displays
 
-        for subplatform in subgroups:
-            #add a new platform
-            groups.append(subgroups + [[n-1]])
-            #add to all existing platforms
-            for i in range(len(subgroups)):
-                groups.append(subgroups[i-1:]+[subgroups[i]+[n-1]]+subgroups[i+1:])
-        return groups
-    
-    def get_cost(group):
-        cost = 0
-        for platform in group:
-            cost += max(heights[painting] for painting in platform)
-        return cost
-    
-    def check_valid(group):
-        for platform in group:
-            width = 0
-            for painting in platform:
-                width += widths[painting]
-            if width > W:
-                return False
-        return True
-    
-    groups = helper(n)
-    valid_groups = []
-    for group in groups:
-        if check_valid(group):
-            valid_groups.append(group)
-    
-    min_cost = float('inf')
-    for group in valid_groups:
-        cost = get_cost(group)
-        if cost < min_cost:
-            min_cost = cost
-            best_group = group
-    
-    return len(best_group), get_cost(best_group), [len(group) for group in best_group]
+    # Naive approach: recursively explore all possible cases and backtrack to compute the optimal value at each explored cases.
+    # Parameters:
+    # i: Index of the current painting.
+    # current_width: total width of the paintings on the current display
+    # current_height: tallest painting in the current display
+    # total_height: the total height of all displays currently.
+    # num_per_display: number of paintings in each display currently. 
+    # We explored all n paintings. Each n-1 paintings we have 2 options to recurse. Thus time complexity is O(n*2^(n-1)).
+    def recurse(i, current_width, current_height, total_height, num_per_display):
+        nonlocal min_height, m, num_paintings   # make the parameters global for recursion.
 
+        # Base case:There is no more paintings to arrange, so we compare with the last optimal height and make conclusions. 
+        if i == n:
+            final_height = total_height + current_height  
+            if final_height < min_height:       # final height after arranging the last painting is less than current optimal height => Update all return outputs for new optimal choice.
+                min_height = final_height
+                m = len(num_per_display)
+                num_paintings = num_per_display[:]
+            return
+        # Case 1: If the current painting can be added to the display
+        # => Update current number of paintings in this display. 
+        # And call recurse for the next painting with updated width and max_height after considering adding this painting.
+        if current_width + widths[i] <= W:
+            num_per_display[-1] += 1
+            recurse(i+1, current_width + widths[i],max(current_height, heights[i]), total_height, num_per_display)
+            num_per_display[-1] -= 1  # reverse adding this painting to this display, allow backtracking
+        # Case 2: Cannot add this painting to the display. 
+        # => Assign a new display for the current painting.
+        # Call recurse for the next painting after updating the height cost for the current painting.
+        num_per_display.append(1)
+        recurse(i+1, widths[i], heights[i], total_height + current_height, num_per_display)
+        num_per_display.pop()  # revert of not assigning new display, allow backtracking.
+    
+    recurse(0,0,0,0, [0])  # Initial call for first painting => no display or height has been assigned yet.
+    return m, min_height, num_paintings 
 
 
 if __name__ == '__main__':
