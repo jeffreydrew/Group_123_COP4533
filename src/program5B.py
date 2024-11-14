@@ -35,7 +35,7 @@ def program5B(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[in
             max_height = max(max_height, heights[j-1])
             # Cannot add ith painting if it exceeds W constraint.
             if total_width > W:
-                break
+                continue
             # If the optimal arrangement up to the j-1 th painting plus the painting from j to i results in smaller heihght,
             # In other words, as j-1th paintings are arranged in optimal way, we found a new optimal arrangement for jth-ith paintings. update dp[i] and store index j-1 as new_display needs.
             if dp[j-1] + max_height < dp[i]:

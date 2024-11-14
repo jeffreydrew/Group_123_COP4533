@@ -1,6 +1,7 @@
 import random
 import time
-#might have to comment next two lines out if on windows
+from tqdm import tqdm
+
 import matplotlib #this 
 matplotlib.use('Agg') #and this
 
@@ -29,19 +30,25 @@ def generate_random_input(n, max_width, max_height):
     return W, heights, widths
 
 def run_experiment(program, n, max_width, max_height, num_runs=25):
-    print(f"\nRunning experiment with n={n}")
     times = []
     all_results = []
+    
+    pbar = tqdm(total=num_runs, desc=f"n={n}", unit='runs')
+    
     for run in range(num_runs):
-        print(f"  Run {run + 1}/{num_runs}", end='\r')
         W, heights, widths = generate_random_input(n, max_width, max_height)
         start_time = time.time()
         result = program(n, W, heights, widths)
-        end_time = time.time()
-        run_time = end_time - start_time
+        run_time = time.time() - start_time
+        
         times.append(run_time)
         all_results.append((run + 1, n, W, result, run_time))
-    print()  # New line after progress
+        
+        avg_time = sum(times) / len(times)
+        pbar.set_postfix({'avg_time': f'{avg_time:.4f}s'})
+        pbar.update(1)
+    
+    pbar.close()
     return times, all_results
 
 def plot_running_times(program, program_name, input_sizes):
@@ -53,21 +60,34 @@ def plot_running_times(program, program_name, input_sizes):
     all_sizes = []
     all_results = []
     
-    if program_name != 'Program3':
-        for n in input_sizes:
-            times, results = run_experiment(program, n, 1000, 1000)
+    batch_pbar = tqdm(input_sizes, desc=f"{program_name} batches", unit='batch')
+    
+    if program_name == 'Program3':
+        for n in batch_pbar:
+            adjusted_n = n//500
+            batch_pbar.set_description(f"{program_name} batches (adjusted n={adjusted_n})")
+            times, results = run_experiment(program, adjusted_n, 1000, 1000)
             avg_time = sum(times) / len(times)
-            print(f"Average time for n={n}: {avg_time:.6f} seconds")
+            batch_pbar.set_postfix({'avg_time': f'{avg_time:.4f}s'})
+            all_times.extend(times)
+            all_sizes.extend([n] * len(times))
+            all_results.extend(results)
+    elif program_name == 'Program4':
+        for n in batch_pbar:
+            adjusted_n = n//20
+            batch_pbar.set_description(f"{program_name} batches (adjusted n={adjusted_n})")
+            times, results = run_experiment(program, adjusted_n, 1000, 1000)
+            avg_time = sum(times) / len(times)
+            batch_pbar.set_postfix({'avg_time': f'{avg_time:.4f}s'})
             all_times.extend(times)
             all_sizes.extend([n] * len(times))
             all_results.extend(results)
     else:
-        for n in input_sizes:
-            adjusted_n = n//500
-            print(f"Note: Using adjusted n={adjusted_n} for Program3")
-            times, results = run_experiment(program, adjusted_n, 1000, 1000)
+        for n in batch_pbar:
+            
+            times, results = run_experiment(program, n, 1000, 1000)
             avg_time = sum(times) / len(times)
-            print(f"Average time for n={n} (adjusted={adjusted_n}): {avg_time:.6f} seconds")
+            batch_pbar.set_postfix({'avg_time': f'{avg_time:.4f}s'})
             all_times.extend(times)
             all_sizes.extend([n] * len(times))
             all_results.extend(results)
@@ -83,6 +103,11 @@ def plot_running_times(program, program_name, input_sizes):
     x_trend = np.linspace(min(all_sizes), max(all_sizes), 100)
     y_trend = p(x_trend)
     plt.plot(x_trend, y_trend, 'r-', label='Trend line')
+    
+    # Add theoretical O(n^2) curve for comparison
+    c = np.mean(np.array(all_times) / (np.array(all_sizes)**2))  # scaling factor
+    theoretical = c * x_trend**2
+    plt.plot(x_trend, theoretical, 'g--', label='O(n²) theoretical')
     
     plt.title(f'Running Times of {program_name} (25 runs per input size)')
     plt.xlabel('Input Size (n)')
@@ -105,19 +130,26 @@ def write_results_to_file(results, program_name):
             f.write("-" * 80 + "\n\n")
 
 def main():
-    input_sizes = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
+    # Define start, end, and number of points
+    start_size = 1000
+    end_size = 10000
+    num_points = 10  # This will give us 100 different input sizes
+    
+    # Generate more granular input sizes
+    input_sizes = np.linspace(start_size, end_size, num_points, dtype=int)
     
     print("\nStarting experimental runs...")
-    print(f"Input sizes: {input_sizes}")
+    print(f"Testing input sizes from {start_size} to {end_size}")
+    print(f"Number of points: {num_points}")
     print(f"Number of runs per input size: 25")
     
-    # Plot1 and results for Program1
-    results1 = plot_running_times(program1, 'Program1', input_sizes)
-    write_results_to_file(results1, 'Program1')
+    # # Plot1 and results for Program1
+    # results1 = plot_running_times(program1, 'Program1', input_sizes)
+    # write_results_to_file(results1, 'Program1')
     
-    # Plot2 and results for Program2
-    results2 = plot_running_times(program2, 'Program2', input_sizes)
-    write_results_to_file(results2, 'Program2')
+    # # Plot2 and results for Program2
+    # results2 = plot_running_times(program2, 'Program2', input_sizes)
+    # write_results_to_file(results2, 'Program2')
 
     # Plot3 and results for Program3
     results3 = plot_running_times(program3, 'Program3', input_sizes)

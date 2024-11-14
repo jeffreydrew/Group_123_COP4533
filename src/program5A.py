@@ -1,4 +1,5 @@
 from typing import List, Tuple
+import sys
 
     
 def program5A(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[int, int, List[int]]:
@@ -19,6 +20,9 @@ def program5A(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[in
     ############################
     # Add you code here
     ############################
+    # Increase recursion limit to handle larger inputs
+    sys.setrecursionlimit(max(1000, n*2))
+    
     # DP with memoization (top_down). dp[i] table tracks the optimal minimum height of arranging the first i paintings
     # The top-down iterate through n paintings. As the minimum height is not recomputed, each paintings will only call recurse(i) i times. Thus time complexity is 1+2+...+n = O(n^2).
     dp = [-1] * (n+1)  # Initialize dp table. -1 means uncomputed at that ith painting.
@@ -41,7 +45,7 @@ def program5A(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[in
             max_height = max(max_height, heights[j-1])
 
             if width_sum > W:
-                break
+                continue
             # curr_height is the heigiht if the subset from jth to ith painting forms a new row. Calculated by adding the minimum height requred to arrange the first j-1th paintings recursively.
             curr_height = recurse(j-1) + max_height
             # Recalculating min height at ith painting if necessary when considering all cases. 
