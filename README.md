@@ -18,3 +18,5 @@ stdout:
 total platforms m
 total cost
 next m lines: # of paintings on each platform
+
+# To our beloved TA: https://drive.google.com/file/d/12-zF6-raUUHU6vRqvDKGgTorUhd9YGd-/view?usp=sharing
